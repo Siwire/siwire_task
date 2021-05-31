@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="mysource_files/favicon.ico">
+
+    <title>Current Exchange Rate</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="mysource_files/style.css" rel="stylesheet">
+  </head>
+  
+  <body>
+    
+    <div class="container">
+      <div class="page-heading">
+        <h1>Current Exchange Rate Table</h1>
+
+        <button type="button" onclick="reloadData()">Reload</button>
+      </div>
+      <div class="row">
+        <table class="table" id="datatable">
+            <thead>
+              <tr>
+                <th scope="col">Currency ID</th>
+                <th scope="col">Currency Abbreviation</th>
+                <th scope="col">Currency Name</th>
+                <th scope="col">Rate</th>
+              </tr>
+            </thead>
+            <tbody id="datatablebody">
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <script>
+        const url = window.location.href;
+
+        (function() {
+            reloadData();
+        })();
+        function reloadData() {
+            const tableRef = document.getElementById('datatable');
+            while(tableRef.rows.length > 0) {
+                tableRef.deleteRow(0);
+            }
+            fetch(`${url}currencies`).then((res) => res.json()).then((result) => {
+                result.data.forEach(element => {
+                    const content = `<tr><th scope="row">${element.Cur_ID}</th><td>${element.Cur_Abbreviation}</td><td>${element.Cur_Name}</td><td>${element.Cur_OfficialRate}</td></tr>`
+                    const newRow = tableRef.insertRow(tableRef.rows.length);
+                    newRow.innerHTML = content;
+                });
+            });
+        }
+    </script>
+  </body>
+</html>
